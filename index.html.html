@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#132A3A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ledger">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23132A3A'/%3E%3Crect x='24' y='28' width='52' height='6' fill='%23C79A45'/%3E%3Crect x='24' y='46' width='52' height='4' fill='%23FBF7EE'/%3E%3Crect x='24' y='58' width='34' height='4' fill='%23FBF7EE'/%3E%3Crect x='24' y='70' width='40' height='4' fill='%232F6F4E'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23132A3A'/%3E%3Crect x='24' y='28' width='52' height='6' fill='%23C79A45'/%3E%3Crect x='24' y='46' width='52' height='4' fill='%23FBF7EE'/%3E%3Crect x='24' y='58' width='34' height='4' fill='%23FBF7EE'/%3E%3Crect x='24' y='70' width='40' height='4' fill='%232F6F4E'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Ledger%20%E2%80%94%20Expense%20Tracker%22%2C%22short_name%22%3A%22Ledger%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23132A3A%22%2C%22theme_color%22%3A%22%23132A3A%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%3D%2527100%2527%2520height%3D%2527100%2527%2520rx%3D%252718%2527%2520fill%3D%2527%2523132A3A%2527%252F%253E%253Crect%2520x%3D%252724%2527%2520y%3D%252728%2527%2520width%3D%252752%2527%2520height%3D%25276%2527%2520fill%3D%2527%2523C79A45%2527%252F%253E%253Crect%2520x%3D%252724%2527%2520y%3D%252746%2527%2520width%3D%252752%2527%2520height%3D%25274%2527%2520fill%3D%2527%2523FBF7EE%2527%252F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%5D%7D">
+<title>Ledger — Personal &amp; Company Expenses</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#132A3A;
+  --ink-2:#1C3A4F;
+  --paper:#FBF7EE;
+  --paper-alt:#EFE7D2;
+  --paper-line:#DED2B4;
+  --gold:#C79A45;
+  --green:#2F6F4E;
+  --green-bg:#E4EFE6;
+  --rust:#B4472E;
+  --rust-bg:#F5E5DF;
+  --slate:#5B6670;
+  --slate-dark:#2B3238;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:var(--ink);
+  color:var(--slate-dark);
+  min-height:100vh;
+}
+.app{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 0 3rem;
+}
+.masthead{
+  background:var(--ink);
+  color:var(--paper);
+  padding:2rem 1.5rem 1.25rem;
+  border-bottom:1px solid var(--gold);
+}
+.masthead-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.masthead h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:1.9rem;
+  margin:0;
+  letter-spacing:0.01em;
+}
+.masthead .tagline{
+  font-size:0.8rem;
+  color:#9FB4C4;
+  margin:0.15rem 0 0;
+  letter-spacing:0.03em;
+}
+.balance-strip{
+  display:flex;
+  gap:1.75rem;
+  margin-top:1.35rem;
+  flex-wrap:wrap;
+}
+.balance-item .label{
+  font-size:0.7rem;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:#8DA3B4;
+  margin-bottom:0.2rem;
+}
+.balance-item .value{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:1.15rem;
+  font-weight:500;
+}
+.value.pos{color:#8FD1AE;}
+.value.neg{color:#E8998A;}
+
+.tabs{
+  display:flex;
+  padding:0 1.5rem;
+  gap:6px;
+  background:var(--ink);
+}
+.tab{
+  font-family:'Fraunces',serif;
+  font-weight:500;
+  font-size:0.95rem;
+  padding:0.65rem 1.3rem 0.55rem;
+  border-radius:10px 10px 0 0;
+  background:var(--paper-alt);
+  color:var(--slate);
+  cursor:pointer;
+  border:1px solid var(--paper-line);
+  border-bottom:none;
+  position:relative;
+  top:1px;
+}
+.tab.active{
+  background:var(--paper);
+  color:var(--ink);
+}
+.tab .dot{
+  display:inline-block;
+  width:7px;height:7px;
+  border-radius:50%;
+  margin-right:6px;
+}
+.tab[data-tab="personal"] .dot{background:var(--green);}
+.tab[data-tab="company"] .dot{background:var(--rust);}
+.tab[data-tab="overview"] .dot{background:var(--gold);}
+
+.card{
+  background:var(--paper);
+  border:1px solid var(--paper-line);
+  border-radius:0 10px 10px 10px;
+  padding:1.5rem;
+  margin:0 1.5rem;
+}
+
+.form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.75rem;
+  margin-bottom:0.75rem;
+}
+.form-row.full{grid-template-columns:1fr;}
+label{
+  display:block;
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--slate);
+  margin-bottom:0.3rem;
+}
+input,select{
+  width:100%;
+  font-family:'Inter',sans-serif;
+  font-size:0.9rem;
+  padding:0.55rem 0.65rem;
+  border:1px solid var(--paper-line);
+  border-radius:6px;
+  background:#fff;
+  color:var(--slate-dark);
+}
+input:focus,select:focus{
+  outline:2px solid var(--gold);
+  outline-offset:1px;
+}
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:0.6rem;
+  margin-top:0.4rem;
+}
+button{
+  font-family:'Inter',sans-serif;
+  font-size:0.85rem;
+  font-weight:600;
+  padding:0.55rem 1.1rem;
+  border-radius:6px;
+  cursor:pointer;
+  border:1px solid var(--ink);
+}
+button.primary{
+  background:var(--ink);
+  color:var(--paper);
+}
+button.primary:hover{background:var(--ink-2);}
+button.ghost{
+  background:transparent;
+  color:var(--slate);
+  border-color:var(--paper-line);
+}
+button.ghost:hover{border-color:var(--slate);}
+
+.section-title{
+  font-family:'Fraunces',serif;
+  font-size:1.05rem;
+  font-weight:600;
+  margin:1.6rem 0 0.6rem;
+  color:var(--ink);
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+}
+.section-title .month-total{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.95rem;
+  font-weight:500;
+}
+
+.entries{
+  border-top:1px solid var(--paper-line);
+}
+.entry{
+  display:grid;
+  grid-template-columns:64px 1fr auto auto;
+  align-items:center;
+  gap:0.75rem;
+  padding:0.7rem 0.1rem;
+  border-bottom:1px solid var(--paper-line);
+}
+.entry .date{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.75rem;
+  color:var(--slate);
+}
+.entry .desc-block .desc{
+  font-size:0.92rem;
+  font-weight:500;
+  color:var(--slate-dark);
+}
+.entry .desc-block .cat{
+  font-size:0.72rem;
+  color:var(--slate);
+  margin-top:2px;
+}
+.entry .amount{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.92rem;
+  font-weight:500;
+  white-space:nowrap;
+}
+.entry .amount.income{color:var(--green);}
+.entry .amount.expense{color:var(--rust);}
+.entry .row-actions{
+  display:flex;
+  gap:0.35rem;
+}
+.icon-btn{
+  border:none;
+  background:transparent;
+  color:var(--slate);
+  font-size:0.75rem;
+  padding:2px 5px;
+  cursor:pointer;
+  border-radius:4px;
+}
+.icon-btn:hover{background:var(--paper-alt);}
+
+.empty{
+  padding:2rem 0.5rem;
+  text-align:center;
+  color:var(--slate);
+  font-size:0.88rem;
+}
+
+/* Overview */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0.85rem;
+  margin-bottom:1.5rem;
+}
+.stat-card{
+  background:var(--paper-alt);
+  border-radius:8px;
+  padding:0.9rem 1rem;
+}
+.stat-card .label{
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  color:var(--slate);
+}
+.stat-card .value{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:1.25rem;
+  font-weight:500;
+  margin-top:0.25rem;
+  color:var(--ink);
+}
+.breakdown-row{
+  display:grid;
+  grid-template-columns:110px 1fr 70px;
+  align-items:center;
+  gap:0.6rem;
+  margin-bottom:0.5rem;
+  font-size:0.82rem;
+}
+.breakdown-row .cat-name{color:var(--slate-dark);}
+.bar-track{
+  background:var(--paper-alt);
+  border-radius:4px;
+  height:9px;
+  overflow:hidden;
+}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-fill.personal{background:var(--green);}
+.bar-fill.company{background:var(--rust);}
+.breakdown-row .amt{
+  font-family:'IBM Plex Mono',monospace;
+  text-align:right;
+  color:var(--slate-dark);
+}
+
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:0.6rem;
+  margin-bottom:0.4rem;
+  flex-wrap:wrap;
+}
+.month-picker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.82rem;
+  padding:0.4rem 0.6rem;
+  border:1px solid var(--paper-line);
+  border-radius:6px;
+  background:#fff;
+}
+.export-link{
+  font-size:0.78rem;
+  color:var(--slate);
+  text-decoration:underline;
+  cursor:pointer;
+  background:none;
+  border:none;
+  padding:0;
+}
+.status-msg{
+  font-size:0.75rem;
+  color:var(--slate);
+  margin-top:0.6rem;
+  min-height:1em;
+}
+.month-subline{
+  font-size:0.8rem;
+  color:var(--slate);
+  margin:-0.35rem 0 0.8rem;
+}
+.kind-toggle{
+  display:flex;
+  gap:6px;
+}
+.kind-btn{
+  flex:1;
+  padding:0.5rem;
+  border-radius:6px;
+  border:1px solid var(--paper-line);
+  background:#fff;
+  color:var(--slate);
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:0.85rem;
+}
+.kind-btn.active.expense{background:var(--rust-bg);color:var(--rust);border-color:var(--rust);}
+.kind-btn.active.income{background:var(--green-bg);color:var(--green);border-color:var(--green);}
+
+.drive-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:0.75rem;
+  flex-wrap:wrap;
+  margin-top:1.1rem;
+  padding-top:0.9rem;
+  border-top:1px solid #2A4A5F;
+}
+.drive-bar .drive-status{
+  font-size:0.75rem;
+  color:#9FB4C4;
+}
+.drive-actions{
+  display:flex;
+  gap:0.5rem;
+  flex-wrap:wrap;
+}
+.btn-sm{
+  font-family:'Inter',sans-serif;
+  font-size:0.75rem;
+  font-weight:600;
+  padding:0.35rem 0.7rem;
+  border-radius:5px;
+  cursor:pointer;
+  background:transparent;
+  border:1px solid #3D5A6E;
+  color:#DCE7EE;
+}
+.btn-sm:hover{background:#1C3A4F;}
+
+@media (max-width:520px){
+  .form-row{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr;}
+  .entry{grid-template-columns:52px 1fr auto;}
+  .row-actions{grid-column:1 / -1; justify-content:flex-end;}
+  .masthead h1{font-size:1.5rem;}
+  .card{margin:0 0.75rem;padding:1.1rem;}
+  .tabs{padding:0 0.75rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="masthead">
+    <div class="masthead-top">
+      <div>
+        <h1>Ledger</h1>
+        <p class="tagline">Personal &amp; company expenses, one book</p>
+      </div>
+    </div>
+    <div class="balance-strip">
+      <div class="balance-item">
+        <div class="label">Personal net, this month</div>
+        <div class="value" id="strip-personal">—</div>
+      </div>
+      <div class="balance-item">
+        <div class="label">Company net, this month</div>
+        <div class="value" id="strip-company">—</div>
+      </div>
+      <div class="balance-item">
+        <div class="label">Combined net</div>
+        <div class="value" id="strip-combined">—</div>
+      </div>
+    </div>
+    <div class="drive-bar">
+      <span class="drive-status" id="drive-status">Drive backup not connected.</span>
+      <div class="drive-actions">
+        <button class="btn-sm" id="drive-connect">Connect Drive</button>
+        <button class="btn-sm" id="drive-backup" style="display:none">Back up now</button>
+        <button class="btn-sm" id="drive-restore" style="display:none">Restore</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="personal"><span class="dot"></span>Personal</div>
+    <div class="tab" data-tab="company"><span class="dot"></span>Company</div>
+    <div class="tab" data-tab="overview"><span class="dot"></span>Overview</div>
+  </div>
+
+  <div class="card" id="card">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleClient()"></script>
+<script>
+const CATEGORIES = {
+  personal: {
+    expense: ["Food","Transport","Utilities","Shopping","Health","Entertainment","Rent","Other"],
+    income: ["Salary","Freelance","Business revenue","Investment","Refund","Gift","Other"]
+  },
+  company: {
+    expense: ["Travel","Client meals","Supplies","Software","Meals","Lodging","Postage","Other"],
+    income: ["Client payment","Consulting fee","Project revenue","Grant","Other"]
+  }
+};
+
+let entries = [];
+let activeTab = "personal";
+let editingId = null;
+const monthState = { personal: currentMonthKey(), company: currentMonthKey() };
+const formKindState = { personal: "expense", company: "expense" };
+
+// ---- Google Drive backup ----
+// Paste the OAuth Client ID from Google Cloud Console here (see setup steps).
+const GOOGLE_CLIENT_ID = "PASTE_YOUR_CLIENT_ID_HERE.apps.googleusercontent.com";
+const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+const BACKUP_FILENAME = "ledger-backup.json";
+
+let tokenClient = null;
+let accessToken = null;
+let tokenExpiry = 0;
+
+function initGoogleClient(){
+  if(!window.google || !google.accounts || !google.accounts.oauth2) return;
+  if(GOOGLE_CLIENT_ID.indexOf("PASTE_YOUR") === 0){
+    setDriveStatus("Add your Google Client ID in the code to enable Drive backup.");
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: ()=>{}
+  });
+  if(localStorage.getItem("drive-connected") === "1"){
+    updateDriveUI(true);
+  }
+}
+
+function setDriveStatus(msg){
+  const el = document.getElementById("drive-status");
+  if(el) el.textContent = msg;
+}
+
+function updateDriveUI(connected){
+  const last = localStorage.getItem("drive-last-backup");
+  document.getElementById("drive-connect").style.display = connected ? "none" : "";
+  document.getElementById("drive-backup").style.display = connected ? "" : "none";
+  document.getElementById("drive-restore").style.display = connected ? "" : "none";
+  if(connected){
+    setDriveStatus(last ? `Last backed up ${new Date(last).toLocaleString()}` : "Connected. Not backed up yet.");
+  }
+}
+
+function ensureToken(promptType){
+  return new Promise((resolve, reject)=>{
+    if(!tokenClient){ reject(new Error("Google sign-in isn't ready yet. Wait a moment and try again.")); return; }
+    if(accessToken && Date.now() < tokenExpiry - 5000){ resolve(accessToken); return; }
+    tokenClient.callback = (resp)=>{
+      if(resp.error){ reject(new Error(resp.error)); return; }
+      accessToken = resp.access_token;
+      tokenExpiry = Date.now() + (resp.expires_in * 1000);
+      resolve(accessToken);
+    };
+    tokenClient.requestAccessToken({ prompt: promptType || "" });
+  });
+}
+
+async function connectDrive(){
+  try{
+    await ensureToken("consent");
+    localStorage.setItem("drive-connected", "1");
+    updateDriveUI(true);
+  }catch(e){
+    setDriveStatus("Couldn't connect: " + e.message);
+  }
+}
+
+async function findBackupFile(token){
+  const q = encodeURIComponent(`name='${BACKUP_FILENAME}' and trashed=false`);
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name,modifiedTime)`, {
+    headers:{ Authorization: `Bearer ${token}` }
+  });
+  if(!res.ok) throw new Error("Drive lookup failed (" + res.status + ")");
+  const data = await res.json();
+  return (data.files && data.files.length) ? data.files[0] : null;
+}
+
+async function backupToDrive(){
+  setDriveStatus("Backing up…");
+  try{
+    const token = await ensureToken("");
+    const existing = await findBackupFile(token);
+    const content = JSON.stringify({ entries, exportedAt: new Date().toISOString() });
+    const boundary = "ledgerboundary";
+    const metadata = existing ? {} : { name: BACKUP_FILENAME, mimeType: "application/json" };
+    const body =
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+      `--${boundary}\r\nContent-Type: application/json\r\n\r\n${content}\r\n` +
+      `--${boundary}--`;
+    const url = existing
+      ? `https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=multipart`
+      : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
+    const res = await fetch(url, {
+      method: existing ? "PATCH" : "POST",
+      headers:{
+        Authorization: `Bearer ${token}`,
+        "Content-Type": `multipart/related; boundary=${boundary}`
+      },
+      body
+    });
+    if(!res.ok) throw new Error("Drive upload failed (" + res.status + ")");
+    localStorage.setItem("drive-last-backup", new Date().toISOString());
+    updateDriveUI(true);
+  }catch(e){
+    setDriveStatus("Backup failed: " + e.message);
+  }
+}
+
+async function restoreFromDrive(){
+  if(!confirm("This replaces everything currently in the app with your last Drive backup. Continue?")) return;
+  setDriveStatus("Restoring…");
+  try{
+    const token = await ensureToken("");
+    const existing = await findBackupFile(token);
+    if(!existing){ setDriveStatus("No backup found in Drive yet — back up first."); return; }
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${existing.id}?alt=media`, {
+      headers:{ Authorization: `Bearer ${token}` }
+    });
+    if(!res.ok) throw new Error("Drive download failed (" + res.status + ")");
+    const data = await res.json();
+    entries = data.entries || [];
+    save("Restored from Drive.");
+    render();
+    setDriveStatus("Restored from Drive backup.");
+  }catch(e){
+    setDriveStatus("Restore failed: " + e.message);
+  }
+}
+
+document.getElementById("drive-connect").addEventListener("click", connectDrive);
+document.getElementById("drive-backup").addEventListener("click", backupToDrive);
+document.getElementById("drive-restore").addEventListener("click", restoreFromDrive);
+
+function currentMonthKey(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+}
+function monthKeyOf(dateStr){ return dateStr.slice(0,7); }
+function monthLabel(key){
+  const [y,m] = key.split("-").map(Number);
+  const d = new Date(y, m-1, 1);
+  return d.toLocaleDateString(undefined,{month:"long", year:"numeric"});
+}
+function fmt(n){
+  return new Intl.NumberFormat('en-IN', {style:'currency', currency:'INR', minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+}
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+const STORAGE_KEY = "ledger-entries-v1";
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    entries = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    entries = [];
+  }
+  render();
+}
+
+function save(msg){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    setStatus(msg || "Saved.");
+  }catch(e){
+    setStatus("Could not save — your browser may be blocking storage.");
+  }
+}
+
+function setStatus(msg){
+  const el = document.getElementById("status-msg");
+  if(el){
+    el.textContent = msg;
+    setTimeout(()=>{ if(el.textContent===msg) el.textContent=""; }, 2500);
+  }
+}
+
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    activeTab = t.dataset.tab;
+    editingId = null;
+    render();
+  });
+});
+
+function render(){
+  updateStrip();
+  const card = document.getElementById("card");
+  if(activeTab === "overview"){
+    card.innerHTML = renderOverview();
+  } else {
+    card.innerHTML = renderLedgerTab(activeTab);
+    wireForm(activeTab);
+    wireMonthPicker(activeTab);
+    wireRowActions(activeTab);
+  }
+}
+
+function updateStrip(){
+  const mk = currentMonthKey();
+  const pNet = netFor("personal", mk);
+  const cNet = netFor("company", mk);
+  const pEl = document.getElementById("strip-personal");
+  const cEl = document.getElementById("strip-company");
+  const combinedEl = document.getElementById("strip-combined");
+  pEl.textContent = fmt(pNet);
+  pEl.className = "value " + (pNet >= 0 ? "pos" : "neg");
+  cEl.textContent = fmt(cNet);
+  cEl.className = "value " + (cNet >= 0 ? "pos" : "neg");
+  const combined = pNet + cNet;
+  combinedEl.textContent = fmt(combined);
+  combinedEl.className = "value " + (combined >= 0 ? "pos" : "neg");
+}
+
+function sumKind(type, kind, mk){
+  return entries.filter(e=>e.type===type && e.kind===kind && monthKeyOf(e.date)===mk)
+    .reduce((s,e)=>s+e.amount,0);
+}
+function netFor(type, mk){
+  return sumKind(type,"income",mk) - sumKind(type,"expense",mk);
+}
+
+function renderLedgerTab(type){
+  const mk = monthState[type];
+  const kind = formKindState[type];
+  const cats = CATEGORIES[type][kind];
+  const list = entries
+    .filter(e=>e.type===type && monthKeyOf(e.date)===mk)
+    .sort((a,b)=> b.date.localeCompare(a.date));
+  const income = list.filter(e=>e.kind==="income").reduce((s,e)=>s+e.amount,0);
+  const expense = list.filter(e=>e.kind==="expense").reduce((s,e)=>s+e.amount,0);
+  const net = income - expense;
+
+  const catOptions = cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+
+  const rows = list.length ? list.map(e=>`
+    <div class="entry" data-id="${e.id}">
+      <div class="date">${e.date.slice(5)}</div>
+      <div class="desc-block">
+        <div class="desc">${escapeHtml(e.description)}</div>
+        <div class="cat">${escapeHtml(e.category)}</div>
+      </div>
+      <div class="amount ${e.kind}">${fmtSigned(e.amount, e.kind)}</div>
+      <div class="row-actions">
+        <button class="icon-btn edit-btn" data-id="${e.id}">Edit</button>
+        <button class="icon-btn del-btn" data-id="${e.id}">Delete</button>
+      </div>
+    </div>
+  `).join("") : `<div class="empty">No ${type} entries for ${monthLabel(mk)} yet. Add the first one above.</div>`;
+
+  const editing = editingId ? entries.find(e=>e.id===editingId && e.type===type) : null;
+
+  return `
+    <div class="form-row full">
+      <div>
+        <label>Kind</label>
+        <div class="kind-toggle">
+          <button type="button" class="kind-btn ${kind==='expense' ? 'active expense' : ''}" data-kind="expense">Expense</button>
+          <button type="button" class="kind-btn ${kind==='income' ? 'active income' : ''}" data-kind="income">Income</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="f-date">Date</label>
+        <input type="date" id="f-date" value="${editing ? editing.date : todayStr()}">
+      </div>
+      <div>
+        <label for="f-amount">Amount</label>
+        <input type="number" id="f-amount" step="0.01" min="0" placeholder="0.00" value="${editing ? editing.amount : ""}">
+      </div>
+    </div>
+    <div class="form-row full">
+      <div>
+        <label for="f-desc">Description</label>
+        <input type="text" id="f-desc" placeholder="${kind==='income' ? 'Where did it come from?' : 'What was it for?'}" value="${editing ? escapeAttr(editing.description) : ""}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="f-cat">Category</label>
+        <select id="f-cat">${catOptions}</select>
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <div class="form-actions" style="width:100%;">
+          ${editing ? '<button class="ghost" id="cancel-edit">Cancel</button>' : ""}
+          <button class="primary" id="save-entry">${editing ? "Save changes" : "Add entry"}</button>
+        </div>
+      </div>
+    </div>
+    <div id="status-msg" class="status-msg"></div>
+
+    <div class="section-title">
+      <span>${monthLabel(mk)}</span>
+      <span class="month-total" style="color:${net >= 0 ? 'var(--green)' : 'var(--rust)'}">${fmt(net)}</span>
+    </div>
+    <div class="month-subline">Income ${fmt(income)} &middot; Expenses ${fmt(expense)}</div>
+    <div class="toolbar">
+      <input type="month" class="month-picker" id="month-picker" value="${mk}">
+      <button class="export-link" id="export-btn">Export CSV</button>
+    </div>
+    <div class="entries">${rows}</div>
+  `;
+}
+
+function fmtSigned(n, kind){
+  return (kind === "income" ? "+" : "-") + fmt(n).replace("-","");
+}
+
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function escapeAttr(s){ return escapeHtml(s); }
+
+function wireForm(type){
+  const catSel = document.getElementById("f-cat");
+  if(editingId){
+    const editing = entries.find(e=>e.id===editingId);
+    if(editing) catSel.value = editing.category;
+  }
+  document.querySelectorAll(".kind-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      formKindState[type] = btn.dataset.kind;
+      render();
+    });
+  });
+  document.getElementById("save-entry").addEventListener("click", ()=>{
+    const dateEl = document.getElementById("f-date");
+    const amtEl = document.getElementById("f-amount");
+    const descEl = document.getElementById("f-desc");
+    const catEl = document.getElementById("f-cat");
+
+    const date = dateEl.value;
+    const amount = parseFloat(amtEl.value);
+    const description = descEl.value.trim();
+    const category = catEl.value;
+    const kind = formKindState[type];
+
+    if(!date){ setStatus("Pick a date first."); dateEl.focus(); return; }
+    if(!amount || amount <= 0){ setStatus("Enter an amount greater than 0."); amtEl.focus(); return; }
+    if(!description){ setStatus("Enter a short description."); descEl.focus(); return; }
+
+    if(editingId){
+      const e = entries.find(x=>x.id===editingId);
+      Object.assign(e, {date, amount, description, category, kind});
+      editingId = null;
+      save("Entry updated.");
+    } else {
+      entries.push({id:uid(), type, kind, date, amount, description, category});
+      save("Entry added.");
+    }
+    monthState[type] = monthKeyOf(date);
+    render();
+  });
+
+  const cancelBtn = document.getElementById("cancel-edit");
+  if(cancelBtn){
+    cancelBtn.addEventListener("click", ()=>{ editingId = null; render(); });
+  }
+
+  document.getElementById("export-btn").addEventListener("click", ()=> exportCsv(type));
+}
+
+function wireMonthPicker(type){
+  document.getElementById("month-picker").addEventListener("change", (e)=>{
+    monthState[type] = e.target.value;
+    render();
+  });
+}
+
+function wireRowActions(type){
+  document.querySelectorAll(".edit-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      editingId = b.dataset.id;
+      const editing = entries.find(e=>e.id===editingId);
+      if(editing) formKindState[type] = editing.kind;
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+  document.querySelectorAll(".del-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      entries = entries.filter(e=>e.id !== b.dataset.id);
+      if(editingId === b.dataset.id) editingId = null;
+      save("Entry deleted.");
+      render();
+    });
+  });
+}
+
+function exportCsv(type){
+  const mk = monthState[type];
+  const list = entries.filter(e=>e.type===type && monthKeyOf(e.date)===mk)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  let csv = "Date,Kind,Description,Category,Amount (INR)\n";
+  list.forEach(e=>{
+    csv += `${e.date},${e.kind},"${e.description.replace(/"/g,'""')}",${e.category},${e.amount.toFixed(2)}\n`;
+  });
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${type}-ledger-${mk}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderOverview(){
+  const mk = currentMonthKey();
+  const pIncome = sumKind("personal","income",mk);
+  const pExpense = sumKind("personal","expense",mk);
+  const cIncome = sumKind("company","income",mk);
+  const cExpense = sumKind("company","expense",mk);
+  const pNet = pIncome - pExpense;
+  const cNet = cIncome - cExpense;
+  const combined = pNet + cNet;
+
+  const personalBreakdown = breakdownFor("personal", mk);
+  const companyBreakdown = breakdownFor("company", mk);
+
+  return `
+    <div class="section-title"><span>Overview — ${monthLabel(mk)}</span></div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">Personal net</div>
+        <div class="value" style="color:${pNet>=0?'var(--green)':'var(--rust)'}">${fmt(pNet)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Company net</div>
+        <div class="value" style="color:${cNet>=0?'var(--green)':'var(--rust)'}">${fmt(cNet)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Combined net</div>
+        <div class="value" style="color:${combined>=0?'var(--green)':'var(--rust)'}">${fmt(combined)}</div>
+      </div>
+    </div>
+    <div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat-card">
+        <div class="label">Personal income</div>
+        <div class="value" style="color:var(--green)">${fmt(pIncome)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Personal expenses</div>
+        <div class="value" style="color:var(--rust)">${fmt(pExpense)}</div>
+      </div>
+    </div>
+    <div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat-card">
+        <div class="label">Company income</div>
+        <div class="value" style="color:var(--green)">${fmt(cIncome)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Company expenses</div>
+        <div class="value" style="color:var(--rust)">${fmt(cExpense)}</div>
+      </div>
+    </div>
+
+    <div class="section-title"><span>Personal by category</span></div>
+    ${renderBreakdown(personalBreakdown, "personal")}
+
+    <div class="section-title"><span>Company by category</span></div>
+    ${renderBreakdown(companyBreakdown, "company")}
+  `;
+}
+
+function breakdownFor(type, mk){
+  const list = entries.filter(e=>e.type===type && monthKeyOf(e.date)===mk);
+  const byCat = {};
+  list.forEach(e=>{ byCat[e.category] = (byCat[e.category]||0) + e.amount; });
+  const max = Math.max(0, ...Object.values(byCat));
+  return {byCat, max};
+}
+
+function renderBreakdown({byCat, max}, type){
+  const cats = Object.keys(byCat).sort((a,b)=>byCat[b]-byCat[a]);
+  if(!cats.length) return `<div class="empty">No ${type} entries this month.</div>`;
+  return cats.map(c=>{
+    const pct = max ? Math.round((byCat[c]/max)*100) : 0;
+    return `
+      <div class="breakdown-row">
+        <div class="cat-name">${escapeHtml(c)}</div>
+        <div class="bar-track"><div class="bar-fill ${type}" style="width:${pct}%"></div></div>
+        <div class="amt">${fmt(byCat[c])}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+load();
+</script>
+</body>
+</html>
